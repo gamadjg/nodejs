@@ -4,8 +4,11 @@ const port = 8080;
 app.use(express.static("public"));
 app.set("views", "./views");
 app.set("view engine", "ejs");
-
 app.listen(port);
+
+// mongodb connection
+const dburi =
+	"mongodb+srv://<username>:<password>@cluster0.azc2l.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 
 app.get("/", (req, res) => {
 	const todoList = [
