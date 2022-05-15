@@ -6,7 +6,7 @@ require("dotenv").config();
 
 const dburi = process.env.dbURI;
 const port = process.env.PORT;
-
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.set("views", "./views");
 app.set("view engine", "ejs");
@@ -22,40 +22,20 @@ mongoose
 		console.log(err);
 	});
 
-app.get("/add-task", (req, res) => {
-	console.log("New task has been submitted.");
-	const task = new Tasks({
-		title: "new task",
-		due: "05/12/22",
-		priority: "1",
-	});
+// Middleware function that is intended to run every time a request is made
+const myLogger = function (req, res, next) {
+	console.log("Request Method: " + req.method);
+	console.log("Request date: " + new Date());
 
-	task
-		.save()
-		.then((result) => {
-			// .send used to send a body of text (can also be html text) to be displayed on the browser, does NOT SUPPORT views
-			res.send(result);
-			console.log("new task has been added to the db");
-		})
-		.catch((err) => {
-			console.log(err);
-		});
-});
-
-app.get("/all-tasks", (req, res) => {
-	Tasks.find()
-		.then((result) => {
-			res.send(result);
-		})
-		.catch((err) => {
-			console.log(err);
-		});
-});
+	// NEED TO ADD next() to middleware that isn't returning any response.
+	next();
+};
+// Calling the middleware
+app.use(myLogger);
 
 app.get("/", (req, res) => {
 	// .render, sends specified views + partials to be displayed on the browers
 	res.render("index", { title: "Home" });
-	console.log("req made to enter home page.");
 });
 
 app.get("/about", (req, res) => {
@@ -84,6 +64,35 @@ app.get("/tasks", (req, res) => {
 		})
 		.catch((err) => {
 			console.log(err);
+		});
+});
+
+app.post("/tasks", (req, res) => {
+	const task = new Tasks({
+		title: req.body.description,
+		due: req.body.dueDate,
+		priority: req.body.priority,
+	});
+	task
+		.save()
+		.then((result) => {
+			res.redirect("tasks");
+			console.log("new task has been added to the db");
+		})
+		.catch((err) => {
+			console.log(err);
+		});
+});
+
+app.delete("/tasks/:id", (req, res) => {
+	const id = req.params.id;
+
+	Tasks.findByIdAndDelete(id)
+		.then(() => {
+			res.json({ redirect: "/tasks" });
+		})
+		.catch((error) => {
+			console.log(error);
 		});
 });
 

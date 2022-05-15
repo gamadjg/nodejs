@@ -10,3 +10,20 @@ a:active {
 	color: inherit;
 	text-decoration: none;
 }
+
+.task-list {
+	margin: 10px 0px 10px 0px;
+}
+
+.task-header {
+	display: flex;
+	gap: 5px;
+}
+
+.task-data {
+	display: flex;
+}
+
+.task-title {
+	margin: 0;
+}

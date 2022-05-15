@@ -1,24 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
 	<%- include('./partials/head.ejs') %>
-	</head>
 	<body>
 		<%- include('./partials/nav.ejs')%>
 
 		<h1><%= title %> page</h1>
-
-		<% if (todoList.length > 0){ %> 
-			<% todoList.forEach(item => { %>
-				<h3 class="taskTitle"><%= item.title %></h3>
-				<div class="taskMetadata">
+		<form action="/tasks" method="POST">
+			<h2>Enter a new task</h2>
+			<label for="priority">Priority</label>
+			<input type="text" id="priority" name="priority" />
+			<br />
+			<label for="dueDate">Due Date</label>
+			<input type="date" id="dueDate" name="dueDate" />
+			<br />
+			<label for="description">Description</label>
+			<input type="text" id="description" name="description" />
+			<br />
+			<input type="submit" />
+		</form>
+		<div class="task-list">
+			<% if (todoList.length > 0){ %> <% todoList.forEach(item => { %>
+			<div class="task-container">
+				<div class="task-header">
+					<i
+						class="task fa-solid fa-trash-can"
+						data-doc="<%= item.id %>"
+						id="task"
+					></i>
+					<h3 class="task-title"><%= item.title %></h3>
+				</div>
+				<div class="task-data">
 					<p>Priority: <%= item.priority %></p>
 					<p>Due: <%= item.due %></p>
 				</div>
-			<% }) %> 
-		<% }else{%>
+			</div>
+			<% }) %> <% }else{%>
 			<p>No tasks due today.</p>
-		<% } %> 
-		
-		<%- include('./partials/footer.ejs')%>
+			<% } %>
+		</div>
+		<div class="footer"><%- include('./partials/footer.ejs')%></div>
+		<script>
+			const tasks = document.querySelectorAll("i.task");
+			tasks.forEach((element) => {
+				element.addEventListener("click", (event) => {
+					const endpoint = `/tasks/${element.dataset.doc}`;
+
+					fetch(endpoint, { method: "DELETE" })
+						.then((response) => response.json())
+						.then((data) => (window.location.href = data.redirect))
+						.catch((error) => console.log(error));
+				});
+			});
+		</script>
 	</body>
 </html>
