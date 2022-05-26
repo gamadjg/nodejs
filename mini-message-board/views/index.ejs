@@ -1,11 +1,21 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <title><%= title %></title>
-    <link rel='stylesheet' href='/stylesheets/style.css' />
-  </head>
-  <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
-  </body>
+<html lang="en">
+	<%- include("./partials/head") %>
+	<body>
+		<%- include("./partials/nav") %>
+		<div class="all-messages-container">
+			<% messages.forEach(message => { %>
+			<div class="message-container">
+				<div class="message-header">
+					<p>From: <%= message.user %></p>
+					<p>Posted on: <%= message.added %></p>
+				</div>
+				<div class="message-body">
+					<p class="message-text"><%= message.text %></p>
+				</div>
+			</div>
+			<% }) %>
+		</div>
+		<div class="footer"><%- include("./partials/footer")%></div>
+	</body>
 </html>
