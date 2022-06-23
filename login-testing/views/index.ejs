@@ -2,12 +2,29 @@
 <html>
 	<head>
 		<title><%= title %></title>
-		<link rel="stylesheet" href="/stylesheets/style.css" />
+		<link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
 	</head>
 	<body>
-		<a href="/sign-up">Sign Up</a>
+		<div class="login-out">
+			<% if(user){ %>
+			<a href="/log-out">Log Out</a>
+			<% }else{ %>
+			<div class="body-header">
+				<form class="form-login" action="/log-in" method="POST">
+					<label for="username">Username</label>
+					<input name="username" placeholder="username" type="text" />
+					<label for="password">Password</label>
+					<input name="password" type="password" />
+					<button>Log In</button>
+				</form>
+				<a href="/sign-up">Sign Up</a>
+				<% } %>
+			</div>
+		</div>
 
 		<h1><%= title %></h1>
-		<p>Welcome to <%= title %></p>
+		<% if(user){ %>
+		<p>Welcome back <%= user.username %></p>
+		<% } %>
 	</body>
 </html>
